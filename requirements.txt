@@ -1,0 +1,6 @@
+cdlib
+networkx
+numpy
+matplotlib
+tqdm
+scipy
