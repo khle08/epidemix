@@ -176,7 +176,7 @@ s, i, r = epi.simulate(days)
 
 The function will help you get the probability with respect to each time interval. 
 
-![image-20200927184201145](/Users/kcl/Library/Application Support/typora-user-images/image-20200927184201145.png)
+![prob.jpg](pics/prob.jpg)
 
 ### 4. State Propagation
 
@@ -196,7 +196,7 @@ Finally, the network simulation can be visualized by applying the following func
 epi.visualize(status, np.arange(16), figsize=(15, 15), n_row=4, n_col=4)
 ```
 
-![image-20200927190030119](/Users/kcl/Library/Application Support/typora-user-images/image-20200927190030119.png)
+![network.jpg](pics/network.jpg)
 
 
 
