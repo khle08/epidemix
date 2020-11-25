@@ -60,6 +60,8 @@ class EpiModel(object):
         self.sim = None
         self.sims = None
         self.vacci_num = 0
+        self.vacci_sum = 0
+        self.vacci_list = []
         self.vacci_func = None
         self.t = None
         self.propagating = []
@@ -119,6 +121,8 @@ class EpiModel(object):
                                     self.color_list,
                                     G=nx.Graph(self.A))
 
+            self.vacci_sum += self.vacci_num
+
         # Put the model into a differential equation solver.
         self.sim = odeint(self.model.derivative, self.model.initial, t)
         # Split the results into a proper number of part.
@@ -141,6 +145,8 @@ class EpiModel(object):
             self.G = self.set_graph(self.state_list,
                                     self.color_list,
                                     G=nx.Graph(self.A))
+
+            self.vacci_sum += self.vacci_num
 
         # Simulate the later part after the "A" matrix is changed.
         self.simulate(t[idx:])
@@ -234,11 +240,14 @@ class EpiModel(object):
             if idx in disconnect_index:
                 self.disconnect_links(state=disconnect_state)
 
+            self.vacci_list.append(self.vacci_sum)
+
             record['iteration'] = idx
             record['state'] = copy.deepcopy(self.state_list)
             record['color'] = copy.deepcopy(self.color_list)
             record['adj'] = copy.deepcopy(self.A)
             record['graph'] = copy.deepcopy(self.G)
+            record['vacci_sum'] = self.vacci_sum
             status.append(record)
 
         return status, probs

@@ -171,7 +171,7 @@ if __name__ == '__main__':
     epi.set_propagate(1, 2, neighbor=None, update_state=False)
 
     # status, _ = epi.propagation()
-    status, probs = epi.propagation(reconstruct_index=[2, 4, 7],
+    status, probs = epi.propagation(reconstruct_index=[2, 4, 7, 20],
                                     reconstruct_param=0.5)
 
     epi.visualize(status, np.arange(16), figsize=(15, 15), n_row=4, n_col=4)
