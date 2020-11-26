@@ -220,7 +220,7 @@ As a class is properly defined above, it can be put into `EpiModel` for further 
 
 # Citation
 
-Impact of Vaccination Strategies for Epidemic Node-level SVIR Probabilistic Model. 2020. CL Kuo, MX Chen, Victor, Chan.
+Impact of Vaccination Strategies for Epidemic Node-level SVIR Probabilistic Model. 2020. CL Kuo, MX Chen, WK Victor Chan.
 
 
 
