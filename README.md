@@ -69,8 +69,8 @@ These classes are the default Ordinary Differential Equations (ODE) functions th
 import numpy as np
 import networkx as nx
 
-from epidemic import EpiModel
-from utils.plot import draw_probs, get_neighbor
+from epidemix.epidemic import EpiModel
+from utils.plot import draw_probs
 ```
 
 where `EpiModel` is the most important API being responsible for both network simulation and disease propagation. In addition, a given time period is crucial in order to solve ODEs. A timeline should also be generated here.
