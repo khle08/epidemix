@@ -137,13 +137,7 @@ epi.visualize(status, np.arange(16), figsize=(15, 15), n_row=4, n_col=4)
 
 Except for the default epidemic models being defined in `epidemix`, people can also customize their model according to their need. Take SIR model for example here, we assume that the recovered nodes will never get the disease again. The ODE set is formulated as follows:
 
-$$ \begin{cases} \cfrac{ds_i(t)}{dt} = -\beta s_i(t)\sum_j A_{ij} x_j(t)
-\\
-\cfrac{dx_i(t)}{dt} = \beta s_i(t)\sum_j A_{ij} x_j(t) - \gamma x_i(t)
-\\
-\cfrac{dr_i(t)}{dt} = \gamma x_i(t) \end{cases}
-\\
-x_i(t) + s_i(t) + r_i(t) = 1 $$
+![sir_eq.jpg](https://github.com/khle08/epidemix/blob/master/pics/sir_eq.jpg)
 
 The adjacent matrix (A) describe the network architecture so that the S nodes can only be contaminated when they have infected neighbors. If there is a connection between 2 nodes, the value would be 1. Otherwise, it would be 0 such that:
 
