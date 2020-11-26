@@ -180,7 +180,7 @@ There are 2 important parts:
 1. `__init__` method to initialize the probabilities with respect to different states.
 2. `derivative` method to formulate ODE.
 
-```pyth
+```python
 class SIR(DifferentialEquation):
     def __init__(self, A, I0, R0, beta, gamma):
         # numpy 2D Adjacent matrix
