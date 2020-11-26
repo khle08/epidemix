@@ -1,15 +1,21 @@
 
 # https://medium.com/@joel.barmettler/how-to-upload-your-python-package-to-pypi-65edc5fe9c56
 
+import pathlib
 from setuptools import setup, find_packages
 
 __author__ = 'Guo Jun-Lin'
 __license__ = "BSD 2 Clause"
-__email__ = "khle0806@gmail.com"
+__email__ = "guojl19@mails.tsinghua.edu.cn"
 
 # Get the long description from the README file
 # with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 #    long_description = f.read()
+
+# The directory containing this file.
+HERE = pathlib.Path(__file__).parent
+# The text of the README file
+README = (HERE / 'README.md').read_text()
 
 install_requires = ['networkx', 'numpy', 'matplotlib',
                     'tqdm', 'scipy', 'cdlib', 'future']
@@ -18,14 +24,15 @@ keywords = ['epidemic', 'vaccination', 'graph', 'networkx', 'community',
             'propagation', 'differential-equation', 'covid-19', 'cdlib']
 
 setup(name='epidemix',
-      version='1.0.0',
+      version='1.0.1',
       license='BSD-2-Clause',
-      description='Epidemic propagation',
+      description='Simulation of Epidemic Propagation on a Network',
+      long_description=README,
+      long_description_content_type='text/markdown',
       url='https://github.com/khle08/epidemix',
       download_url = "https://github.com/benedekrozemberczki/karateclub/archive/v_10014.tar.gz",
       author='Guo Jun-Lin',
       author_email='guojl19@mails.tsinghua.edu.cn',
-      use_2to3=True,
       classifiers=[
           # How mature is this project? Common values are
           #   3 - Alpha
@@ -50,6 +57,7 @@ setup(name='epidemix',
       ],
       keywords=keywords,
       install_requires=install_requires,
-      packages=find_packages(
-          exclude=["*.test", "*.test.*", "test.*", "test", "demon.test", "demon.test.*"]),
+      packages=['epidemix'],
+      include_package_data=True,
+      entry_points={'console_scripts': ['epidemix=epidemix.__main__:main']}
       )

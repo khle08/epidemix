@@ -10,13 +10,13 @@ Predict the spread of a disease is crucial to all of us because no one can work 
 
 This is also called SIR model. Sometimes, the model can be even more easier containing only S and I states so that the mathematical mechanism can be better understood. The famous SIR model can not only be applied on the total number of a group of people, but also be able to be implemented to a network composed of nodes and edges. To represent each person by one node and define the relationship between 2 people as the edge connected to the 2 nodes, we can model the society mathematically. A certain epidemic is spreaded throughout the social network from those infected people. By calculating the probabilistic states, i.e:
 
-+ $s_i(t)\to$ probability that node i is `susceptible` at time t 
-+ $x_i(t)\to$ probability that node i is `infected` at time t
-+ $r_i(t)\to$ probability that node i is `recovered` at time t
++ Si(t) probability that node i is `susceptible` at time t 
++ Xi(t) probability that node i is `infected` at time t
++ Ri(t) probability that node i is `recovered` at time t
 
 along with the coefficients such that:
-+ $\beta\to$ individual transmission / infection rate
-+ $\gamma\to$ recovery rate
++ β : individual transmission / infection rate
++ γ : recovery rate
 
 We will be capable of tracking the state of each node along the time line. Combining with the undirected graph structure, which is also called a network, the original simple SIR model is transformed from deteministic to probabilistic description.
 
@@ -39,11 +39,11 @@ p.s. The programming language should be `Python3`.
 
 # The Reproduction Rate
 
-There is a famous factor $R_0$, which is also called: basic reproduction nnumber. This factor indicates the average number of people being infected by an infected person. If $R_0 > 1$, it means that the disease will keep spreading in the society. On the other hand, if $R_0 < 1$, it implies that the infected population will converge and the disease will not spread persistently. 
+There is a famous factor R0, which is also called: basic reproduction nnumber. This factor indicates the average number of people being infected by an infected person. If R0 > 1, it means that the disease will keep spreading in the society. On the other hand, if R0 < 1, it implies that the infected population will converge and the disease will not spread persistently. 
 
-| Disease    | -            | Transmission     | -        | $R_0$  |
+| Disease    | -            | Transmission     | -        | R0  |
 | ---------- | ------------ | ---------------- | -------- | ------ |
-| Measles    | 麻疹         | Airborne         | 空气传播 | 12～18 |
+| Measles    | 麻疹         | Airborne         | 空气传播 | 12~18 |
 | Pertussis  | 百日咳       | Airborne droplet | 空气飞沫 | 12~17  |
 | Diptheria  | 白喉         | Saliva           | 唾液     | 6~7    |
 | Smallpox   | 天花         | Social Contact   | 社交接触 | 5~7    |
@@ -51,15 +51,15 @@ There is a famous factor $R_0$, which is also called: basic reproduction nnumber
 | Rubelia    | 风疹         | Airborne droplet | 空气飞沫 | 5~7    |
 | Mumps      | 流行性腮腺炎 | Airborne droplet | 空气飞沫 | 4~7    |
 | HIV / AIDS | 艾滋病       | Sexual contact   | 性传播   | 2~5    |
-| SARS       | 非典型肺炎   | Airborne droplet | 空气飞沫 | 2～5   |
+| SARS       | 非典型肺炎   | Airborne droplet | 空气飞沫 | 2~5   |
 
 
 
-# SIR Model: S $\to$ I $\to$ R
+# SIR Model: S → I → R
 
 In a node level SIR model, we assume that the recovered nodes will never get the disease again. The ODE set is formulated as follows:
 
-$$ \begin{cases} \cfrac{ds_i(t)}{dt} = -\beta s_i(t)\sum_j A_{ij} x_j(t)
+> $$ \begin{cases} \cfrac{ds_i(t)}{dt} = -\beta s_i(t)\sum_j A_{ij} x_j(t)
 \\
 \cfrac{dx_i(t)}{dt} = \beta s_i(t)\sum_j A_{ij} x_j(t) - \gamma x_i(t)
 \\
@@ -176,7 +176,7 @@ s, i, r = epi.simulate(days)
 
 The function will help you get the probability with respect to each time interval. 
 
-![prob.jpg](pics/prob.jpg)
+![prob.jpg](./pics/prob.jpg)
 
 ### 4. State Propagation
 
@@ -196,7 +196,7 @@ Finally, the network simulation can be visualized by applying the following func
 epi.visualize(status, np.arange(16), figsize=(15, 15), n_row=4, n_col=4)
 ```
 
-![network.jpg](pics/network.jpg)
+![network.jpg](./pics/network.jpg)
 
 
 

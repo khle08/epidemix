@@ -1,0 +1,13 @@
+README.md
+setup.py
+epidemix/__init__.py
+epidemix/__main__.py
+epidemix/epidemic.py
+epidemix/equations.py
+epidemix/vaccination.py
+epidemix.egg-info/PKG-INFO
+epidemix.egg-info/SOURCES.txt
+epidemix.egg-info/dependency_links.txt
+epidemix.egg-info/entry_points.txt
+epidemix.egg-info/requires.txt
+epidemix.egg-info/top_level.txt
