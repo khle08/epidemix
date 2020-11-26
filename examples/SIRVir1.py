@@ -4,12 +4,12 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 from tqdm import tqdm
-from epidemic import EpiModel
-from equations import SIRVir1
-from vaccination import VacciModel
+from epidemix.epidemic import EpiModel
+from epidemix.equations import SIRVir1
+from epidemix.vaccination import VacciModel
 
-from utils.plot import draw_probs
-from utils.config import set_params
+from epidemix.utils.plot import draw_probs
+from epidemix.utils.config import set_params
 
 G = nx.watts_strogatz_graph(40, 5, 0.4)
 days = np.arange(0, 50, 0.1)

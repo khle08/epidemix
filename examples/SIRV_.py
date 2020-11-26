@@ -14,12 +14,12 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 from tqdm import tqdm
-from epidemic import EpiModel
-from equations import SIRV
-from vaccination import VacciModel
+from epidemix.epidemic import EpiModel
+from epidemix.equations import SIRV
+from epidemix.vaccination import VacciModel
 
-from utils.plot import draw_probs, get_neighbor
-from utils.config import set_params
+from epidemix.utils.plot import draw_probs, get_neighbor
+from epidemix.utils.config import set_params
 
 ########################################################################
 

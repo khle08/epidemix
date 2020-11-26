@@ -55,11 +55,89 @@ There is a famous factor R0, which is also called: basic reproduction nnumber. T
 
 
 
-# SIR Model: S → I → R
+# Network Simulation
 
-In a node level SIR model, we assume that the recovered nodes will never get the disease again. The ODE set is formulated as follows:
+The following epidemic models have been included in `epidemix` package: SI, SIS, SIR, SIRV. Each model can be imported as follows.
 
-> $$ \begin{cases} \cfrac{ds_i(t)}{dt} = -\beta s_i(t)\sum_j A_{ij} x_j(t)
+```python
+from epidemix.equations import SI, SIS, SIR, SIRV
+```
+
+These classes are the default Ordinary Differential Equations (ODE) functions that can be used to simulate in a network. Before starting the simulation, we need the other dependencies, along with the function defined in `epidemix` such that:
+
+```python
+import numpy as np
+import networkx as nx
+
+from epidemic import EpiModel
+from utils.plot import draw_probs, get_neighbor
+```
+
+where `EpiModel` is the most important API being responsible for both network simulation and disease propagation. In addition, a given time period is crucial in order to solve ODEs. A timeline should also be generated here.
+
+```python
+days = np.arange(0, 10, 0.1)
+```
+
+### 1. Network Initialization
+
+Whatever types of network can be generated so that the simulation can be activated based on the network.
+
+```python
+num_node = 50
+# G = nx.watts_strogatz_graph(num_node, 5, 0.4)     # Small world
+# G = nx.powerlaw_cluster_graph(num_node, 5, 0.4)   # Power law
+G = nx.gnp_random_graph(num_node, 0.08)             # Random
+```
+
+### 2. Instantiation
+
+Take the selected ODEs and Graph (network) into `EpiModel` along with some parameters. Mind that the function will pass `params` into `SIR` ODEs. Namely, the parameters listed here are specifically prepared for SIR function. 
+
+```python
+# Note --> SIR  params: I0, R0, beta, gamma
+epi = EpiModel(G, SIR, num_state=3, params=[4, 2, 0.4, 0.2])
+```
+
+### 3. Simulate
+
+As the parameters are all settled down, the simulation can begin according to the time period. If it is a SIR model, the output would be 3 states where each state is a 2D matrix. The number of row will be defined by the total number of time unit and the number of column will be decided by the total number of node in a network. Each number in the matrix represents the probability that a node staying at THAT corresponding state in a specific moment.
+
+```python
+s, i, r = epi.simulate(days)
+```
+
+The function will help you get the probability with respect to each time interval. 
+
+![prob.jpg](https://github.com/khle08/epidemix/blob/master/pics/prob.jpg)
+
+### 4. State Propagation
+
+So far, we only get the probabilities of each state for all nodes. However, the deterministic state of each node at time t remains unknown. Although the trend of the probabilities can guide the transformation of each node, we still need to define the sequence first so that the computer can know how to propagate between nodes and between states. In SIR case, S will be turned into I and I will be turned into R.
+
+```pytho
+epi.set_propagate(0, 1, neighbor=1, update_state=False)
+epi.set_propagate(1, 2, neighbor=None, update_state=False)
+status, _ = epi.propagation()
+```
+
+`set_propagate` method has 4 parameters (from, to, neighbor, update_state). If SIR is defined properly, 012 will represent SIR respectively and the setup should be done by the number. `neighbor` means that the state transition will happen only when the neighbor of the node has `neighbor` kind of neighbor. S will be infected only when it has $1\rightarrow infected$ neighbors. As for the parameter `update_state`, it is used to deal with the split state transition. If one node can be transformed into 2 optional states, it should follow a sequence. The state that is transformed later should turn it into `True`. 
+
+Finally, the network simulation can be visualized by applying the following function, where status records all the information during network propagation including the actual state of each node, the color of each node, etc. The second parameter indicates what moment we want to observe. The third, forth, and fifth parameters are used to adjust the shape of the plotted result. Therefore, it is better that the number of row and column is in accordance with the number of time interval.
+
+```python
+epi.visualize(status, np.arange(16), figsize=(15, 15), n_row=4, n_col=4)
+```
+
+![network.jpg](https://github.com/khle08/epidemix/blob/master/pics/network.jpg)
+
+
+
+# Self-defined Model: S → I → R
+
+Except for the default epidemic models being defined in `epidemix`, people can also customize their model according to their need. Take SIR model for example here, we assume that the recovered nodes will never get the disease again. The ODE set is formulated as follows:
+
+$$ \begin{cases} \cfrac{ds_i(t)}{dt} = -\beta s_i(t)\sum_j A_{ij} x_j(t)
 \\
 \cfrac{dx_i(t)}{dt} = \beta s_i(t)\sum_j A_{ij} x_j(t) - \gamma x_i(t)
 \\
@@ -97,13 +175,19 @@ A = array([[0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 
 # Construct SIR Model with Python Code
 
-The ODE set should be defined in a class inherited from `DifferentialEquation` class. There are 2 important parts:
+The ODE set should be defined in a class inherited from `DifferentialEquation` class. 
+
+```python
+from epidemix.equations import DifferentialEquation
+```
+
+There are 2 important parts:
 
 1. `__init__` method to initialize the probabilities with respect to different states.
 2. `derivative` method to formulate ODE.
 
 ```pyth
-class SIR(equations.DifferentialEquation):
+class SIR(DifferentialEquation):
     def __init__(self, A, I0, R0, beta, gamma):
         # numpy 2D Adjacent matrix
         self.A = A
@@ -136,67 +220,7 @@ If we have 10 nodes in a network, `self.initial` attribute would be a vector wit
 1. `self.A` for saving the adjacent matrix.
 2. `self.N` for saving the total number of node, which is equal to `len(self.A)`.
 
-
-
-# Network Simulation
-
-As the ODE set is well defined in a class, the simulation can be executed by applying `EpiModel` class. Except for the dependencies, there are some functions that should be imported first.
-
-```python
-from epidemic import EpiModel
-from utils.plot import draw_probs, get_neighbor
-```
-
-In addition, ODE is solved by a given time period. A timeline should also be generated here.
-
-```python
-days = np.arange(0, 10, 0.1)
-```
-
-### 1. Generate a Network
-
-```pyth
-# G = nx.watts_strogatz_graph(num_node, 5, 0.4)     # Small world
-# G = nx.powerlaw_cluster_graph(num_node, 5, 0.4)   # Power law
-G = nx.gnp_random_graph(num_node, 0.08)             # Random
-```
-
-### 2. Initialization
-
-```python
-# Note --> SIR  params: I0, R0, beta, gamma
-epi = EpiModel(G, SIR, num_state=3, params=[4, 2, 0.4, 0.2])
-```
-
-### 3. Simulate
-
-```pytho
-s, i, r = epi.simulate(days)
-```
-
-The function will help you get the probability with respect to each time interval. 
-
-![prob.jpg](./pics/prob.jpg)
-
-### 4. State Propagation
-
-So far, we only get the probabilities of each state for all nodes. However, the deterministic state of each node at time t remains unknown. Although the trend of the probabilities can guide the transformation of each node, we still need to define the sequence first. In SIR case, S will be turned into I and I will be turned into R.
-
-```pytho
-epi.set_propagate(0, 1, neighbor=1, update_state=False)
-epi.set_propagate(1, 2, neighbor=None, update_state=False)
-status, _ = epi.propagation()
-```
-
-`set_propagate` method has 4 parameters (from, to, neighbor, update_state). If SIR is defined properly, 012 will represent SIR respectively and the setup should be done by the number. `neighbor` means that the state transition will happen only when the neighbor of the node has `neighbor` kind of neighbor. S will be infected only when it has $1\rightarrow infected$ neighbors. As for the parameter `update_state`, it is used to deal with the split state transition. If one state can be transformed into 2 states, it should follow a sequence. The state that is transformed later should turn it into `True`.
-
-Finally, the network simulation can be visualized by applying the following function.
-
-```python
-epi.visualize(status, np.arange(16), figsize=(15, 15), n_row=4, n_col=4)
-```
-
-![network.jpg](./pics/network.jpg)
+As a class is properly defined above, it can be put into `EpiModel` for further simulation. Mind that the parameters defined in the SIR `__init__` class will be set up as `EpiModel` is instantiated with `params` settings.
 
 
 

@@ -24,13 +24,12 @@ keywords = ['epidemic', 'vaccination', 'graph', 'networkx', 'community',
             'propagation', 'differential-equation', 'covid-19', 'cdlib']
 
 setup(name='epidemix',
-      version='1.0.1',
+      version='1.0.2',
       license='BSD-2-Clause',
       description='Simulation of Epidemic Propagation on a Network',
       long_description=README,
       long_description_content_type='text/markdown',
       url='https://github.com/khle08/epidemix',
-      download_url = "https://github.com/benedekrozemberczki/karateclub/archive/v_10014.tar.gz",
       author='Guo Jun-Lin',
       author_email='guojl19@mails.tsinghua.edu.cn',
       classifiers=[
