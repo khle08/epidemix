@@ -35,6 +35,14 @@ This package is developed based on the following dependencies:
 
 p.s. The programming language should be `Python3`.
 
+### Install epidemix
+
+```bash
+pip install epidemix
+```
+
+And the required dependencies will also be installed automatically.
+
 
 
 # The Reproduction Rate
@@ -209,7 +217,7 @@ class SIR(DifferentialEquation):
         return np.hstack([-b, b - r, r])
 ```
 
-If we have 10 nodes in a network, `self.initial` attribute would be a vector with length $10\times \#state$, which is 30 in SIR case. Mind that there are 2 parameters that must be defined here:
+If we have 10 nodes in a network, `self.initial` attribute would be a vector with length 10 x \#state​, which is 30 in SIR case. Mind that there are 2 parameters that must be defined here:
 
 1. `self.A` for saving the adjacent matrix.
 2. `self.N` for saving the total number of node, which is equal to `len(self.A)`.
