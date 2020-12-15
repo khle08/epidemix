@@ -4,6 +4,9 @@
 say something ....
 '''
 
-__version__ = "1.1.0"
+from epidemix.utils.plot import *
+from epidemix.utils.partition import *
+
+__version__ = "1.1.1"
 
 ########################################################################
