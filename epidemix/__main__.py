@@ -24,11 +24,11 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 from tqdm import tqdm
-from epidemic import EpiModel
-from vaccination import VacciModel
-from equations import SI, SIS, SIR, SIRV
+from epidemix.epidemic import EpiModel
+from epidemix.vaccination import VacciModel
+from epidemix.equations import SI, SIS, SIR, SIRV
 
-from utils.plot import draw_probs
+from epidemix.utils.plot import draw_probs
 
 ########################################################################
 
@@ -79,4 +79,3 @@ if __name__ == '__main__':
     # ------------------------------------------------------------------
     main()    # For testing the propagation process.
     # ------------------------------------------------------------------
-

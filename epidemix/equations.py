@@ -21,13 +21,16 @@ from scipy.integrate import odeint
 ########################################################################
 
 
-class DifferentialEquation(object):
+class NetworkODE(object):
     # The 2 necessary parameters that are easily being ignored.
     A = None
     N = None
     initial = None
 
     def derivative(self, z, t):
+        assert self.A is not None, 'A is not defined.'
+        assert self.N is not None, 'N is not defined.'
+        assert self.initial is not None, 'Nodes are not initiated.'
         raise NotImplementedError()
 
     @property
@@ -68,7 +71,7 @@ class DifferentialEquation(object):
         return idx
 
 
-class SI(DifferentialEquation):
+class SI(NetworkODE):
     def __init__(self, A, I0, beta):
         # numpy 2D Adjacent matrix
         self.A = A
@@ -89,7 +92,7 @@ class SI(DifferentialEquation):
         return np.hstack([-b, b])
 
 
-class SIS(DifferentialEquation):
+class SIS(NetworkODE):
     def __init__(self, A, I0, beta, gamma):
         # numpy 2D Adjacent matrix
         self.A = A
@@ -114,7 +117,7 @@ class SIS(DifferentialEquation):
         return np.concatenate([-b + r, b - r])
 
 
-class SIR(DifferentialEquation):
+class SIR(NetworkODE):
     def __init__(self, A, I0, R0, beta, gamma):
         # numpy 2D Adjacent matrix
         self.A = A
@@ -142,7 +145,7 @@ class SIR(DifferentialEquation):
         return np.hstack([-b, b - r, r])
 
 
-class SIRV(DifferentialEquation):
+class SIRV(NetworkODE):
     """docstring for SIRV"""
 
     def __init__(self, A, I0, R0, V0, beta, gamma, eps):
@@ -180,7 +183,7 @@ class SIRV(DifferentialEquation):
         return np.hstack([-b - v, b - r, r, v])
 
 
-class SIRVir1(DifferentialEquation):
+class SIRVir1(NetworkODE):
     def __init__(self, A, I0, R0, V0, i0, r0, beta1, gamma1, alpha1,
                  beta2, gamma2, alpha2, eps):
         # numpy 2D Adjacent matrix
@@ -245,7 +248,7 @@ class SIRVir1(DifferentialEquation):
                           r2 - a2])
 
 
-class SIRVir2(DifferentialEquation):
+class SIRVir2(NetworkODE):
     def __init__(self, A, I0, R0, V0, i0, r0, beta1, gamma1, alpha1,
                  beta2, gamma2, alpha2, eps, eps1v, eps2v):
         # numpy 2D Adjacent matrix
@@ -306,7 +309,7 @@ class SIRVir2(DifferentialEquation):
                           r2 - a2 - e2])
 
 
-class SEINRVeinr(DifferentialEquation):
+class SEINRVeinr(NetworkODE):
     def __init__(self, A, E0, I0, N0, R0, V0, e0, i0, n0, r0,
                  beta1, theta1, eta1, gamma1, pi1, alpha1, eps,
                  beta2, theta2, eta2, gamma2, pi2, alpha2):
@@ -404,7 +407,7 @@ class SEINRVeinr(DifferentialEquation):
                           r2 + p2 - a2])      # r
 
 
-class SIRS(DifferentialEquation):
+class SIRS(NetworkODE):
     def __init__(self, A, I0, R0, beta, gamma, delta):
         # numpy 2D Adjacent matrix
         self.A = A
@@ -414,7 +417,7 @@ class SIRS(DifferentialEquation):
         pass
 
 
-class SEIR(DifferentialEquation):
+class SEIR(NetworkODE):
     def __init__(self, A, E0, I0, R0, sigma, beta, gamma):
         # numpy 2D Adjacent matrix
         self.A = A
@@ -424,7 +427,7 @@ class SEIR(DifferentialEquation):
         pass
 
 
-class SEIRD(DifferentialEquation):
+class SEIRD(NetworkODE):
     def __init__(self, A, E0, I0, R0, D0, sigma, beta, gamma, p, rho):
         # numpy 2D Adjacent matrix
         self.A = A

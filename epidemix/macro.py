@@ -21,7 +21,17 @@ from scipy.integrate import odeint
 ########################################################################
 
 
-class SI(object):
+class MacroODE(object):
+    N = None
+    initial = None
+
+    def derivative(self, z, t):
+        assert self.N is not None, 'N is not defined.'
+        assert self.initial is not None, 'States are not initiated.'
+        raise NotImplementedError()
+
+
+class SI(MacroODE):
     def __init__(self, N, I0, beta):
         self.N = N
         self.I0 = I0
@@ -38,7 +48,7 @@ class SI(object):
         return dSdt, dIdt
 
 
-class SIS(object):
+class SIS(MacroODE):
     def __init__(self, N, I0, beta, gamma):
         self.N = N
         self.I0 = I0
@@ -56,7 +66,7 @@ class SIS(object):
         return dSdt, dIdt
 
 
-class SIR(object):
+class SIR(MacroODE):
     """docstring for SIR"""
 
     def __init__(self, N, I0, R0, beta, gamma):
@@ -78,7 +88,7 @@ class SIR(object):
         return dSdt, dIdt, dRdt
 
 
-class SIRS(object):
+class SIRS(MacroODE):
     def __init__(self, N, I0, R0, beta, gamma, delta):
         self.N = N
         self.I0 = I0
@@ -99,7 +109,7 @@ class SIRS(object):
         return dSdt, dIdt, dRdt
 
 
-class SEIR(object):
+class SEIR(MacroODE):
     def __init__(self, N, E0, I0, R0, sigma, beta, gamma):
         self.N = N
         self.E0 = E0
@@ -121,7 +131,7 @@ class SEIR(object):
         return dSdt, dEdt, dIdt, dRdt
 
 
-class SEIRD(object):
+class SEIRD(MacroODE):
     def __init__(self, N, E0, I0, R0, D0, sigma, beta, gamma, p, rho):
         self.N = N
         self.E0 = E0
@@ -169,11 +179,11 @@ if __name__ == '__main__':
     # Seq : N, I0, beta, gamma
     sis = SIS(1000, 10, 0.2, 0.1)
     # Seq : N, I0, R0, beta, gamma
-    sir = SIR(1000, 10, 0, 0.2, 0.1)
+    sir = SIR(1000, 50, 0, 0.4, 0.1)
     # Seq : N, E0, I0, R0, D0, beta, gamma, delta, alpha, rho
     # seird = SEIRD(1000, 1, 0, 0, 0, )
 
-    days = np.linspace(0, 160, 160)
+    days = np.linspace(0, 80, 80)
 
     # ------------------------------------------------------------------
 
@@ -193,13 +203,14 @@ if __name__ == '__main__':
 
     # ------------------------------------------------------------------
 
-    epi = EpiModel(sis)
-    s, i = epi.simulate(days)
+    epi = EpiModel(sir)
+    s, i, r = epi.simulate(days)
 
     # Plot the data on three separate curves for S(t), I(t) and R(t)
     fig = plt.figure(facecolor='w')
     plt.plot(days, s / sis.N, 'b', alpha=0.5, lw=2, label='Susceptible')
     plt.plot(days, i / sis.N, 'r', alpha=0.5, lw=2, label='Infected')
+    plt.plot(days, r / sis.N, 'g', alpha=0.5, lw=2, label='Recovered')
     plt.xlabel('Time /days')
     plt.ylabel('Number (1000s)')
     plt.grid(True)

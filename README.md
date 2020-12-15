@@ -1,12 +1,18 @@
 # Brief
 
-This package is designed to analyze the network diffusion, including epidemic spreading. COVID19 has been contaminating human society for a long time and causing countless loss in many industries. The process of the network diffusion can be described mathematically under a set of ordinary differential equations. In our package, the total number of states can be customized by yourself.
+This package is designed to analyze the network diffusion, such as epidemic spreading and information distribution, motivated by the serious COVID19 pandemic since the end of 2019. The process of network diffusion can be simulated based on the assumption of certain predefined states for each entity and the simulation can be described mathematically under a set of ordinary differential equations (ODE). Except for the models provided by this package, the states and differential equations can also be customized by yourself. In this package, a set of ODE can be applied to the following 2 perspectives:
 
-Predict the spread of a disease is crucial to all of us because no one can work well without good health. In order to analyze the epidemic, the spreading can be split into the following states so that mathematical model can be built up accordingly:
+1. A whole population
 
-1. S - Susceptable
-2. I - Infected
-3. R - Recovered
+2. A Network composed of edges and nodes
+
+Since the virus is the priority task to study, the models provided by this package are all related to epidemics including `SI`, `SIS`, `SIR`, and `SIRV`. In order to analyze the epidemic, the spreading process can be split into the following states so that mathematical model can be built up accordingly:
+
++ S - Susceptable
+
++ I - Infected
+
++ R - Recovered
 
 This is also called SIR model. Sometimes, the model can be even more easier containing only S and I states so that the mathematical mechanism can be better understood. The famous SIR model can not only be applied on the total number of a group of people, but also be able to be implemented to a network composed of nodes and edges. To represent each person by one node and define the relationship between 2 people as the edge connected to the 2 nodes, we can model the society mathematically. A certain epidemic is spreaded throughout the social network from those infected people. By calculating the probabilistic states, i.e:
 
@@ -63,9 +69,94 @@ There is a famous factor R0, which is also called: basic reproduction nnumber. T
 
 
 
-# Network Simulation
+# Simulation Under a Population
 
-The following epidemic models have been included in `epidemix` package: SI, SIS, SIR, SIRV. Each model can be imported as follows.
+The predefined epidemic models can be imported from `epidemix` according to the following code:
+
+```python
+from epidemix.macro import SI, SIS, SIR, SIRS, SEIR, SEIRD
+```
+
+To activate the model and visualize the results of the model, we need the following extra packages and function called `EpiModel`.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+from epidemix.macro import EpiModel
+```
+
+Next, the model can be instantiated by defining the total number of entity in a targeted population, initial infected number, initial recovered number, transmission rate, and recover rate such that:
+
+```python
+sir = SIR(1000, I0=50, R0=0, beta=0.4, gamma=0.1)
+```
+
+To solve the equation, a period of time should be setup where the interval can be any range according to different conditions.
+
+```python
+days = np.linspace(0, 80, 80)
+```
+
+Finally, the simulation can be made by `EpiModel`.
+
+```python
+epi = EpiModel(sir)
+s, i, r = epi.simulate(days)
+```
+
+The trend of state transition can be visualized as follows.
+
+```python
+fig = plt.figure(facecolor='w')
+plt.plot(days, s / sis.N, 'b', alpha=0.5, lw=2, label='Susceptible')
+plt.plot(days, i / sis.N, 'r', alpha=0.5, lw=2, label='Infected')
+plt.plot(days, r / sis.N, 'g', alpha=0.5, lw=2, label='Recovered')
+plt.xlabel('Time /days')
+plt.ylabel('Number (1000s)')
+plt.grid(True)
+plt.legend()
+plt.show()
+```
+
+![macro.jpg](https://github.com/khle08/epidemix/blob/master/pics/macro.jpg)
+
+## Model Customization - Macro
+
+To customize an epidemic model, we need to write down a set of differential equations in advance.
+
+![sir_macro.jpg](https://github.com/khle08/epidemix/blob/master/pics/sir_macro.jpg)
+
+```python
+from epidemix.macro import MacroODE
+
+class SIR(MacroODE):
+    def __init__(self, N, I0, R0, beta, gamma):
+        self.N = N
+        self.I0 = I0
+        self.R0 = R0
+        self.S0 = N - I0 - R0
+        self.initial = (self.S0, I0, R0)
+
+        self.beta = beta
+        self.gamma = gamma
+        self.reproduction_num = beta / gamma    # Definition of "R_0".
+
+    def derivative(self, y, t):
+        S, I, R = y
+        dSdt = -self.beta * S * I / self.N
+        dIdt = self.beta * S * I / self.N - self.gamma * I
+        dRdt = self.gamma * I
+        return dSdt, dIdt, dRdt
+```
+
+Mind that the parameters  `self.initial` and `self.N` should be defined in the `__init__` function and the main body of the differential equations should be defined in `derivative` function accordingly.
+
+
+
+# Simulation Under a Network
+
+The predefined epidemic models can be imported from `epidemix` according to the following code:
 
 ```python
 from epidemix.equations import SI, SIS, SIR, SIRV
@@ -81,7 +172,7 @@ from epidemix.epidemic import EpiModel
 from utils.plot import draw_probs
 ```
 
-where `EpiModel` is the most important API being responsible for both network simulation and disease propagation. In addition, a given time period is crucial in order to solve ODEs. A timeline should also be generated here.
+where `EpiModel` is the most important API being responsible for both network simulation and disease propagation, which shares the same name as the one from `epidemix.macro`. In addition, a given time period is crucial in order to solve ODEs. A timeline should also be generated here.
 
 ```python
 days = np.arange(0, 10, 0.1)
@@ -177,19 +268,19 @@ A = array([[0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 
 # Construct SIR Model with Python Code
 
-The ODE set should be defined in a class inherited from `DifferentialEquation` class. 
+The ODE set should be defined in a class inherited from `NetworkODE` class. 
 
 ```python
-from epidemix.equations import DifferentialEquation
+from epidemix.equations import NetworkODE
 ```
 
-There are 2 important parts:
+There are also 2 important and identical parts comparing to the one for a pupulation:
 
 1. `__init__` method to initialize the probabilities with respect to different states.
 2. `derivative` method to formulate ODE.
 
 ```python
-class SIR(DifferentialEquation):
+class SIR(NetworkODE):
     def __init__(self, A, I0, R0, beta, gamma):
         # numpy 2D Adjacent matrix
         self.A = A
