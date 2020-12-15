@@ -24,7 +24,7 @@ keywords = ['epidemic', 'vaccination', 'graph', 'networkx', 'community',
             'propagation', 'differential-equation', 'covid-19', 'cdlib']
 
 setup(name='epidemix',
-      version='1.1.1',
+      version='1.1.2',
       license='BSD-2-Clause',
       description='Simulation of Epidemic Propagation on a Network',
       long_description=README,

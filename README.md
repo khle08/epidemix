@@ -107,9 +107,9 @@ The trend of state transition can be visualized as follows.
 
 ```python
 fig = plt.figure(facecolor='w')
-plt.plot(days, s / sis.N, 'b', alpha=0.5, lw=2, label='Susceptible')
-plt.plot(days, i / sis.N, 'r', alpha=0.5, lw=2, label='Infected')
-plt.plot(days, r / sis.N, 'g', alpha=0.5, lw=2, label='Recovered')
+plt.plot(days, s / sir.N, 'b', alpha=0.5, lw=2, label='Susceptible')
+plt.plot(days, i / sir.N, 'r', alpha=0.5, lw=2, label='Infected')
+plt.plot(days, r / sir.N, 'g', alpha=0.5, lw=2, label='Recovered')
 plt.xlabel('Time /days')
 plt.ylabel('Number (1000s)')
 plt.grid(True)
