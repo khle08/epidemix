@@ -9,9 +9,7 @@ This package is designed to analyze the network diffusion, such as epidemic spre
 Since the virus is the priority task to study, the models provided by this package are all related to epidemics including `SI`, `SIS`, `SIR`, and `SIRV`. In order to analyze the epidemic, the spreading process can be split into the following states so that mathematical model can be built up accordingly:
 
 + S - Susceptable
-
 + I - Infected
-
 + R - Recovered
 
 This is also called SIR model. Sometimes, the model can be even more easier containing only S and I states so that the mathematical mechanism can be better understood. The famous SIR model can not only be applied on the total number of a group of people, but also be able to be implemented to a network composed of nodes and edges. To represent each person by one node and define the relationship between 2 people as the edge connected to the 2 nodes, we can model the society mathematically. A certain epidemic is spreaded throughout the social network from those infected people. By calculating the probabilistic states, i.e:
