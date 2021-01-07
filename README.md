@@ -314,6 +314,84 @@ If we have 10 nodes in a network, `self.initial` attribute would be a vector wit
 As a class is properly defined above, it can be put into `EpiModel` for further simulation. Mind that the parameters defined in the SIR `__init__` class will be set up as `EpiModel` is instantiated with `params` settings.
 
 
+# Vaccination Strategies under SIRV model
+SIRV model is considering the vaccination process as a state for a node.
+Pk is where we define a vacciantion strategy. 
+
+```python
+class SIRV(NetworkODE):
+    """docstring for SIRV"""
+
+    def __init__(self, A, I0, R0, V0, beta, gamma, eps):
+        # numpy 2D Adjacent matrix
+        self.A = A
+        self.N = len(A)
+
+        # Randomly assign the non-repeated infected, recovered, and vacci nodes.
+        idx = np.random.choice(np.arange(self.N), I0 + R0 + V0, replace=False)
+        self.I0 = np.zeros((self.N,))
+        self.R0 = np.zeros((self.N,))
+        self.V0 = np.zeros((self.N,))
+        self.I0[idx[:I0]] = 1
+        self.R0[idx[I0:I0 + R0]] = 1
+        self.V0[idx[I0 + R0:I0 + R0 + V0]] = 1
+
+        # Init matrix should be stacked into a 1D array.
+        self.initial = np.hstack([1 - self.I0 - self.R0 - self.V0,
+                                  self.I0, self.R0, self.V0])
+        self.beta = beta
+        self.gamma = gamma
+        self.eps = eps
+        self.reproduction_num = beta / gamma
+
+    def derivative(self, z, t):
+        Pk = 1    # default.
+        # Pk = self.degree_base
+        # Pk = self.acq_base
+        # Pk = self.first_nei(z[self.N * 1:2 * self.N])
+        # Pk = self.second_nei(z[self.N * 1:2 * self.N])
+
+        b = self.beta * z[0:self.N] * np.dot(self.A, z[self.N:2 * self.N])
+        r = self.gamma * z[self.N:2 * self.N]
+        v = (1 - self.beta) * self.eps * z[0:self.N] * Pk
+        return np.hstack([-b - v, b - r, r, v])
+```
+Take some straegies for example:
+
+Random strategy means Pk=1 which is to randomly take some nodes to get vaccinated.
+
+Degree-base target strategy is to take the most highly connected nodes in the network to get vaccinated. 
+
+```python
+def degree_base(self):
+    vec = np.sum(self.A, axis=0)
+    return self.N * vec / np.sum(vec)
+```
+
+Random acquaintance strategy is to randomly take some nodes and select its neighbors to get vaccinated.
+
+```python
+def acq_base(self):
+    vec = np.sum(self.A.sum(axis=0) * self.A, axis=1)
+    return self.N * vec / np.sum(vec)
+```
+
+First neighbor strategy is to get the direct neighbors of the infected node whose degree crosses certain threshold vaccinated.
+
+```python
+def first_nei(self, state):
+    state = self.N * state / np.sum(state)
+    vec = np.sum(self.A, axis=0) * state
+    return self.N * vec / np.sum(vec)
+```
+
+Second neighbor strategy is to get the neighbors’ neighbors of the infected nodes vaccinated. 
+```python
+def second_nei(self, state):
+    state = self.N * state / np.sum(state)
+    vec = np.sum(self.A.sum(axis=0) * self.A, axis=1) * state
+    return self.N * vec / np.sum(vec)
+```
 
 # Citation
 
