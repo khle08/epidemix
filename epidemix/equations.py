@@ -66,7 +66,7 @@ class NetworkODE(object):
         return self.N * vec / np.sum(vec)
 
     def inv_idx(self, i, total):
-        idx = np.ones(total, dtype=np.bool)
+        idx = np.ones(total, dtype=bool)
         idx[i] = 0
         return idx
 
