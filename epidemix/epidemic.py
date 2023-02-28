@@ -44,11 +44,11 @@ class EpiModel(object):
         # Assign each node to ...
         for i, state in enumerate(self.initial):
             # ... diff state represented by a number.
-            states[state.astype(np.bool)] = i
+            states[state.astype(bool)] = i
 
         # Summarize the state and color of each node to an independent arr.
-        self.state_list = self.state_queue[states.astype(np.int)]
-        self.color_list = self.state_colors[states.astype(np.int)]
+        self.state_list = self.state_queue[states.astype(int)]
+        self.color_list = self.state_colors[states.astype(int)]
 
         # Assign the initial information to the node attribute.
         self.G = self.set_graph(self.state_list,
