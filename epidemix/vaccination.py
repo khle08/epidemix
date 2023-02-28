@@ -122,8 +122,8 @@ class VacciModel(EpiModel):
         for i, idx_nodes in enumerate(subset):
             # Try each combination by changing its A matrix.
             A_temp = copy.deepcopy(A)
-            A_temp[idx_nodes.astype(np.int), :] = 0
-            A_temp[:, idx_nodes.astype(np.int)] = 0
+            A_temp[idx_nodes.astype(int), :] = 0
+            A_temp[:, idx_nodes.astype(int)] = 0
             # Get the corresponding graph using the A matrix.
             G_temp = self.set_graph(self.state_list,
                                     self.color_list,
@@ -138,7 +138,7 @@ class VacciModel(EpiModel):
             H_list[i] = H
 
         # Find the one combination with minimum HHI value.
-        idx = subset[np.argmin(H_list)].astype(np.int)
+        idx = subset[np.argmin(H_list)].astype(int)
         # Change the A matrix according to the selected nodes.
         A[idx, :] = 0
         A[:, idx] = 0
